@@ -10,9 +10,10 @@
 			<li><a href="addActor.php">Add Actor</a></li>
 			<li><a href="addMovie.php">Add Movie</a></li>
 			<li><a href="addActorToMovie.php" class="selected">Add Actor To Movie</a></li>
+			<li><a href="search.php">Search</a></li>
 		</ul>
 	</nav>
-	<div class="margin-40"></div>
+	<div class="margin-100"></div>
 
 	<section class="contents">
 	<?php
@@ -23,7 +24,7 @@
 			$last = $_GET["last"];
 			$role = $_GET["role"];
 			if($title=="" || $first=="" || $last=="" || $role==""){
-				$message = "Incomplete Input";
+				$message = "Please Complete the Form";
 			}else{
 				$db_connection = mysql_connect("localhost", "cs143", "");
 				mysql_select_db("CS143", $db_connection);

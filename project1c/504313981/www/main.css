@@ -9,6 +9,9 @@ nav{
 	background-color: #333;
 	height: 30px;
 }
+h1{
+	font-family: futura;
+}
 ul{
 	display: table-row;
 	height: 100%;
@@ -52,8 +55,16 @@ form{
 	margin-left: 35%;
 }
 
+.margin-20{
+	height: 20px;
+}
+
 .margin-40{
 	height: 40px;
+}
+
+.margin-100{
+	height: 100px;
 }
 
 input[type=text]{
@@ -88,3 +99,41 @@ select{
 	font-size: 20px;
 	font-family: futura;
 }
+
+.intro{
+	text-align: center;
+	font-size: 50px;
+}
+
+.searchTag{
+	text-align: center;
+}
+
+.font-size-40{
+	font-size: 40px;
+}
+
+.searchResult{
+	margin-left: 50px;
+}
+
+.searchOutput{
+	margin-left: 35%;
+}
+
+.buttonText{
+	display: block;
+	width: 230px;
+	font-size: 30px;
+	border: 3px solid #000;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 10px 10px 10px 10px;
+	transition: 0.8s background-color ease;
+}
+
+.buttonText:hover{
+	background-color: #38C6E8;
+}
+

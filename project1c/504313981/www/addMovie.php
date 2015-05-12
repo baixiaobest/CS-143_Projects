@@ -10,9 +10,10 @@
 			<li><a href="addActor.php">Add Actor</a></li>
 			<li><a href="addMovie.php" class="selected">Add Movie</a></li>
 			<li><a href="addActorToMovie.php">Add Actor To Movie</a></li>
+			<li><a href="search.php">Search</a></li>
 		</ul>
 	</nav>
-	<div class="margin-40"></div>
+	<div class="margin-100"></div>
 	<section class="contents">
 		<?php
 			$title=$company=$year=$formattedYear=$rating=$genre=$message="";
@@ -25,7 +26,7 @@
 				$rating = $_GET["mpaarating"];
 				$genre = $_GET["genre"];
 				if ($title==""){
-					$message = "Incomplete Input";
+					$message = "Please Complete the Form";
 				}else{
 					$db_connection = mysql_connect("localhost", "cs143", "");
 					mysql_select_db("CS143", $db_connection);
@@ -95,13 +96,13 @@
 					if($genre=="") $genre="NULL"; else $genre = "'".$genre."'";
 					$insertMovie = "Insert Into Movie Values(".$newMovieId.",".$title.",".$year.",".$rating.",".$company.");";
 					mysql_query($insertMovie, $db_connection);
-					echo $insertMovie;
+					#echo $insertMovie;
 
 					#insert genre for Movie
 					if ($genre!="NULL"){
 						$linkMovieGenre = "Insert Into MovieGenre Values(".$newMovieId.",".$genre.");";
 						mysql_query($linkMovieGenre, $db_connection);
-						echo $linkMovieGenre;
+						#echo $linkMovieGenre;
 					}
 
 					#set increment id

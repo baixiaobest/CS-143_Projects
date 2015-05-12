@@ -11,9 +11,10 @@
 			<li><a href="addActor.php" class="selected">Add Actor</a></li>
 			<li><a href="addMovie.php">Add Movie</a></li>
 			<li><a href="addActorToMovie.php">Add Actor To Movie</a></li>
+			<li><a href="search.php">Search</a></li>
 		</ul>
 	</nav>
-	<div class="margin-40"></div>
+	<div class="margin-100"></div>
 
 	<section class="contents">
 		<?php
@@ -27,7 +28,7 @@
 				$dateOfBirth = $_GET["dob"];
 				$dateOfDie = $_GET["dod"];
 				if ($firstName=="" || $lastName=="" || $dateOfBirth=="") {
-					$message="Missing Required Input";
+					$message="Please Complete the Form";
 				}else{
 					$db_connection = mysql_connect("localhost", "cs143", "");
 					mysql_select_db("CS143", $db_connection);
@@ -78,7 +79,7 @@
 				#insert new actor
 				$insert = "Insert Into Actor Values(".$newId.",'".$lastName."','".$firstName."','".$sex."',".$formattedDob.",".$formattedDod.");";
 				mysql_query($insert, $db_connection);
-				echo $insert;
+				#echo $insert;
 
 				#set increment id
 				$incrementId="Update MaxPersonID set id = id + 1;";

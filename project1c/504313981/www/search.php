@@ -101,12 +101,14 @@
 
 			<?php
 			#dynamic link request
+
+			#if request is actor
 			if($aid!=""){
 				$actorInfoQuery = "Select * From Actor Where id=".$aid.";";
 				$actorInfoRow = mysql_fetch_row(mysql_query($actorInfoQuery, $db_connection));
 
 				printf("<h2 style=\"font-family: futura; margin-left: 50px\">Actor Basic Info</h2>");
-				printf("<p style=\"margin-left:50px;\">Name: %s %s <br/> Sex: %s<br/>Dob: %s <br/>Dod: %s<p>", $actorInfoRow[2], $actorInfoRow[1], $actorInfoRow[3], $actorInfoRow[4], $actorInfoRow[5]);
+				printf("<p style=\"margin-left:80px;\">Name: %s %s <br/> Sex: %s<br/>Dob: %s <br/>Dod: %s<p>", $actorInfoRow[2], $actorInfoRow[1], $actorInfoRow[3], $actorInfoRow[4], $actorInfoRow[5]);
 
 
 				printf("<h2 style=\"font-family: futura; margin-left: 50px\">Movies ".$actorInfoRow[2]." ".$actorInfoRow[1]." has acted in</h2>");
@@ -117,15 +119,30 @@
 					$queryMovieTitle = "Select * From Movie Where id=".$movieRow[0].";";
 					$movieInfo = mysql_fetch_row(mysql_query($queryMovieTitle, $db_connection));
 					$movieTitle = $movieInfo[1];
-					printf("<p style=\"margin-left:50px;\"><a href=\"search.php?mid=".$movieRow[0]."\">Acted in \"%s\" as \"%s\"</a><p>", $movieTitle, $movieRow[2]);
+					printf("<p style=\"margin-left:80px;\"><a href=\"search.php?mid=".$movieRow[0]."\">Acted in \"%s\" as \"%s\"</a><p>", $movieTitle, $movieRow[2]);
 				}
 
 			}
+
+			#if request is movie
 			if($mid!=""){
 				$movieInfoQuery = "Select * From Movie Where id=".$mid.";";
 				$movieInfoRow = mysql_fetch_row(mysql_query($movieInfoQuery, $db_connection));
+				$movieGenreQuery = "Select genre From MovieGenre Where mid=".$mid.";";
+				$movieGenreResult = mysql_query($movieGenreQuery, $db_connection);
+				$genereList = "";
+				while ($genreRow=mysql_fetch_row($movieGenreResult)) {
+					$genreList = $genreList." ".$genreRow[0];
+				}
+				$movieDirectorQuery = "Select first, last From Director Where id In (Select did From MovieDirector Where mid=".$mid.");";
+				$movieDirectorResult = mysql_query($movieDirectorQuery, $db_connection);
+
+				while($movieDirectorRow=mysql_fetch_row($movieDirectorResult)){
+					$director = $director.$movieDirectorRow[0]." ".$movieDirectorRow[1].",";
+				}
+				
 				printf("<h2 style=\"font-family: futura; margin-left: 50px\">Movie Info</h2>");
-				printf("<p style=\"margin-left:50px;\">Title: %s <br/>Year: %s<br/>Rating: %s<br/>Company: %s</p>", $movieInfoRow[1], $movieInfoRow[2], $movieInfoRow[3], $movieInfoRow[4]);
+				printf("<p style=\"margin-left:80px;\">Title: %s <br/>Year: %s<br/>Rating: %s<br/>Company: %s <br/>Genre: %s<br/>Director: %s</p>", $movieInfoRow[1], $movieInfoRow[2], $movieInfoRow[3], $movieInfoRow[4], $genreList, $director);
 				printf("<h2 style=\"font-family: futura; margin-left: 50px\">Casts</h2>");
 
 				$castQuery = "Select * From MovieActor Where mid=".$mid.";";
@@ -135,7 +152,7 @@
 					$queryCastname = "Select * From Actor Where id=".$castRow[1].";";
 					$actorInfo = mysql_fetch_row(mysql_query($queryCastname,$db_connection));
 					$actorName = $actorInfo[2]." ".$actorInfo[1];
-					printf("<p style=\"margin-left:50px;\"><a href=\"search.php?aid=".$castRow[1]."\">%s acts as %s<a></p>", $actorName, $castRow[2]);
+					printf("<p style=\"margin-left:80px;\"><a href=\"search.php?aid=".$castRow[1]."\">%s acts as %s<a></p>", $actorName, $castRow[2]);
 				}
 			}
 

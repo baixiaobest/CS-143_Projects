@@ -17,14 +17,17 @@
 	<section class="contents">
 		<?php
 			$title=$company=$year=$formattedYear=$rating=$genre=$message="";
+			$genreList="";
 			$db_connection="";
 			$newMovieId;
+
 			if($_SERVER["REQUEST_METHOD"] == "GET"){
 				$title = $_GET["title"];
 				$company = $_GET["company"];
 				$year = $_GET["year"];
 				$rating = $_GET["mpaarating"];
-				$genre = $_GET["genre"];
+				$genreList = $_GET["genreListVal"];
+
 				if ($title==""){
 					$message = "Please Complete the Form";
 				}else{
@@ -74,6 +77,8 @@
 					<option  value="Western">Western</option>
 					</select>
 			<br/>
+			<input style="border: none; font-family:futura;" type="text" name="genreListVal" maxlength="100" size="25">
+			<br/>
 			<br/>
 			<input type="submit" value="Submit"/>
 			</form>
@@ -86,23 +91,20 @@
 					echo "<p> Assign id ".$newMovieId." to ".$title."<br/>";
 					echo "Produced by company ".$company." in ".$year."<br/>";
 					echo "rated ".$rating."<br/>";
-					echo "genre ".$genre."</p>";
+					echo "genre ".$genreList."</p>";
 
 					#insert movie
 					$title = "'".$title."'";
 					if($company=="") $company="NULL"; else $company="'".$company."'";
 					if($year=="") $year="NULL";
 					if($rating=="") $rating="NULL"; else $rating = "'".$rating."'";
-					if($genre=="") $genre="NULL"; else $genre = "'".$genre."'";
 					$insertMovie = "Insert Into Movie Values(".$newMovieId.",".$title.",".$year.",".$rating.",".$company.");";
 					mysql_query($insertMovie, $db_connection);
-					#echo $insertMovie;
-
-					#insert genre for Movie
-					if ($genre!="NULL"){
-						$linkMovieGenre = "Insert Into MovieGenre Values(".$newMovieId.",".$genre.");";
+					
+					$genreArray = explode(" ", $genreList);
+					for($i=0; $i < count($genreArray); $i++){
+						$linkMovieGenre = "Insert Into MovieGenre Values(".$newMovieId.",'".$genreArray[$i]."');";
 						mysql_query($linkMovieGenre, $db_connection);
-						#echo $linkMovieGenre;
 					}
 
 					#set increment id
@@ -118,4 +120,6 @@
 		</div>
 	</section>
 
+	<script src="jquery.js"></script>
+	<script src="script.js"></script>
 </body>

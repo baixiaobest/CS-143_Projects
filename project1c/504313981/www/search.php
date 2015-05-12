@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<title>Internet Movie Database System</title>
-	<link rel="stylesheet" type="text/cs"s href="main.css">
+	<link rel="stylesheet" type="text/css" href="main.css">
 </head>
 
 <body>
@@ -109,7 +109,7 @@
 				printf("<p style=\"margin-left:50px;\">Name: %s %s <br/> Sex: %s<br/>Dob: %s <br/>Dod: %s<p>", $actorInfoRow[2], $actorInfoRow[1], $actorInfoRow[3], $actorInfoRow[4], $actorInfoRow[5]);
 
 
-				printf("<h2 style=\"font-family: futura; margin-left: 50px\">Movies ".$actorInfoRow[2]." ".$actorInfoRow[1]." has acted on</h2>");
+				printf("<h2 style=\"font-family: futura; margin-left: 50px\">Movies ".$actorInfoRow[2]." ".$actorInfoRow[1]." has acted in</h2>");
 				$movieActorQuery = "Select * From MovieActor Where aid=".$aid.";";
 				$movieActorResult = mysql_query($movieActorQuery, $db_connection);
 

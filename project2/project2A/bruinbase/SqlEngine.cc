@@ -137,7 +137,7 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
   RC rc;
   RecordId rid;
   string line;
-  ifstream inputfile(loadfile);
+  ifstream inputfile(loadfile.c_str());
 
   //create a new table file, open will automatically create it
   if ((rc = rf.open(table + ".tbl", 'w')) < 0) {

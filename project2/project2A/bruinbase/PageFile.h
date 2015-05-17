@@ -10,7 +10,7 @@
 #ifndef PAGEFILE_H
 #define PAGEFILE_H
 
-#include <string>/Users/baixiao/Desktop/sharedFolder/project2/project2A/bruinbase/PageFile.h
+#include <string>
 #include "Bruinbase.h"
 
 typedef int PageId;

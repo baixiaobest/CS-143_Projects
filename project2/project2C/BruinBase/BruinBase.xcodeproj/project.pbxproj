@@ -1,0 +1,268 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		A99F749C1B1A4B2900293803 /* Bruinbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bruinbase.h; sourceTree = "<group>"; };
+		A99F749D1B1A4B2900293803 /* BTreeIndex.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BTreeIndex.cc; sourceTree = "<group>"; };
+		A99F749E1B1A4B2900293803 /* BTreeIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTreeIndex.h; sourceTree = "<group>"; };
+		A99F749F1B1A4B2900293803 /* BTreeNode.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BTreeNode.cc; sourceTree = "<group>"; };
+		A99F74A01B1A4B2900293803 /* BTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTreeNode.h; sourceTree = "<group>"; };
+		A99F74A11B1A4B2900293803 /* main.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cc; sourceTree = "<group>"; };
+		A99F74A21B1A4B2900293803 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		A99F74A31B1A4B2900293803 /* movie.del */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = movie.del; sourceTree = "<group>"; };
+		A99F74A41B1A4B2900293803 /* movie.tbl */ = {isa = PBXFileReference; lastKnownFileType = file; path = movie.tbl; sourceTree = "<group>"; };
+		A99F74A51B1A4B2900293803 /* PageFile.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PageFile.cc; sourceTree = "<group>"; };
+		A99F74A61B1A4B2900293803 /* PageFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageFile.h; sourceTree = "<group>"; };
+		A99F74A71B1A4B2900293803 /* readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme.txt; sourceTree = "<group>"; };
+		A99F74A81B1A4B2900293803 /* RecordFile.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RecordFile.cc; sourceTree = "<group>"; };
+		A99F74A91B1A4B2900293803 /* RecordFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordFile.h; sourceTree = "<group>"; };
+		A99F74AA1B1A4B2900293803 /* SqlEngine.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SqlEngine.cc; sourceTree = "<group>"; };
+		A99F74AB1B1A4B2900293803 /* SqlEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SqlEngine.h; sourceTree = "<group>"; };
+		A99F74AC1B1A4B2900293803 /* SqlParser.l */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; path = SqlParser.l; sourceTree = "<group>"; };
+		A99F74AD1B1A4B2900293803 /* SqlParser.y */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; path = SqlParser.y; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		A99F74901B1A4A5E00293803 = {
+			isa = PBXGroup;
+			children = (
+				A99F749C1B1A4B2900293803 /* Bruinbase.h */,
+				A99F74A11B1A4B2900293803 /* main.cc */,
+				A99F74A21B1A4B2900293803 /* Makefile */,
+				A99F74A71B1A4B2900293803 /* readme.txt */,
+				A99F74B41B1A4D3300293803 /* Tree */,
+				A99F74B31B1A4D1F00293803 /* Data */,
+				A99F74B21B1A4CF300293803 /* Page */,
+				A99F74B11B1A4CE100293803 /* Record */,
+				A99F74AF1B1A4CC700293803 /* Engine */,
+				A99F74B01B1A4CD700293803 /* Parser */,
+			);
+			sourceTree = "<group>";
+		};
+		A99F74AF1B1A4CC700293803 /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				A99F74AB1B1A4B2900293803 /* SqlEngine.h */,
+				A99F74AA1B1A4B2900293803 /* SqlEngine.cc */,
+			);
+			name = Engine;
+			sourceTree = "<group>";
+		};
+		A99F74B01B1A4CD700293803 /* Parser */ = {
+			isa = PBXGroup;
+			children = (
+				A99F74AC1B1A4B2900293803 /* SqlParser.l */,
+				A99F74AD1B1A4B2900293803 /* SqlParser.y */,
+			);
+			name = Parser;
+			sourceTree = "<group>";
+		};
+		A99F74B11B1A4CE100293803 /* Record */ = {
+			isa = PBXGroup;
+			children = (
+				A99F74A81B1A4B2900293803 /* RecordFile.cc */,
+				A99F74A91B1A4B2900293803 /* RecordFile.h */,
+			);
+			name = Record;
+			sourceTree = "<group>";
+		};
+		A99F74B21B1A4CF300293803 /* Page */ = {
+			isa = PBXGroup;
+			children = (
+				A99F74A51B1A4B2900293803 /* PageFile.cc */,
+				A99F74A61B1A4B2900293803 /* PageFile.h */,
+			);
+			name = Page;
+			sourceTree = "<group>";
+		};
+		A99F74B31B1A4D1F00293803 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				A99F74A31B1A4B2900293803 /* movie.del */,
+				A99F74A41B1A4B2900293803 /* movie.tbl */,
+			);
+			name = Data;
+			sourceTree = "<group>";
+		};
+		A99F74B41B1A4D3300293803 /* Tree */ = {
+			isa = PBXGroup;
+			children = (
+				A99F749E1B1A4B2900293803 /* BTreeIndex.h */,
+				A99F749D1B1A4B2900293803 /* BTreeIndex.cc */,
+				A99F74A01B1A4B2900293803 /* BTreeNode.h */,
+				A99F749F1B1A4B2900293803 /* BTreeNode.cc */,
+			);
+			name = Tree;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		A99F74951B1A4A5E00293803 /* BruinBase */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = A99F74981B1A4A5E00293803 /* Build configuration list for PBXLegacyTarget "BruinBase" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			dependencies = (
+			);
+			name = BruinBase;
+			passBuildSettingsInEnvironment = 1;
+			productName = BruinBase;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		A99F74911B1A4A5E00293803 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "Baixiao Huang";
+				TargetAttributes = {
+					A99F74951B1A4A5E00293803 = {
+						CreatedOnToolsVersion = 6.1;
+					};
+				};
+			};
+			buildConfigurationList = A99F74941B1A4A5E00293803 /* Build configuration list for PBXProject "BruinBase" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A99F74901B1A4A5E00293803;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A99F74951B1A4A5E00293803 /* BruinBase */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		A99F74961B1A4A5E00293803 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		A99F74971B1A4A5E00293803 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		A99F74991B1A4A5E00293803 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUGGING_SYMBOLS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A99F749A1B1A4A5E00293803 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A99F74941B1A4A5E00293803 /* Build configuration list for PBXProject "BruinBase" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A99F74961B1A4A5E00293803 /* Debug */,
+				A99F74971B1A4A5E00293803 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A99F74981B1A4A5E00293803 /* Build configuration list for PBXLegacyTarget "BruinBase" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A99F74991B1A4A5E00293803 /* Debug */,
+				A99F749A1B1A4A5E00293803 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A99F74911B1A4A5E00293803 /* Project object */;
+}

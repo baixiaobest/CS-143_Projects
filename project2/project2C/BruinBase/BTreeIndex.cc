@@ -17,7 +17,7 @@ using namespace std;
  */
 BTreeIndex::BTreeIndex()
 {
-    rootPid = -1;
+    rootPid = 0;
 }
 
 /*
@@ -29,6 +29,42 @@ BTreeIndex::BTreeIndex()
  */
 RC BTreeIndex::open(const string& indexname, char mode)
 {
+    read = false;
+    write = false;
+    switch (mode) {
+        case 'r':
+        case 'R':
+            read = true;
+            break;
+        case 'w':
+        case 'W':
+            write = true;
+            break;
+        default:
+            break;
+    }
+    if (read || write) {
+        pf.open(indexname, 'r');
+        for (int i=0; i<pf.endPid(); i++) {
+            SuperNode sNode;
+            sNode.read(i,pf);
+            if (sNode.isLeaf()) {
+                BTLeafNode newNode(sNode);
+                nodeVec.push_back(newNode);
+            }else{
+                BTNonLeafNode newNode(sNode);
+                nodeVec.push_back(newNode);
+            }
+        }
+        pf.close();
+    }
+    if(write){
+        pf.open(indexname, 'w');
+    }
+    if(!write && !read){
+        return RC_INVALID_FILE_FORMAT; //invalid mode
+    }
+    
     return 0;
 }
 
@@ -38,6 +74,11 @@ RC BTreeIndex::open(const string& indexname, char mode)
  */
 RC BTreeIndex::close()
 {
+    if(write){
+        for (int i=0; i<nodeVec.size(); i++) {
+            nodeVec[i].write(i, pf);
+        }
+    }
     return 0;
 }
 
@@ -72,7 +113,7 @@ RC BTreeIndex::insert(int key, const RecordId& rid)
  */
 RC BTreeIndex::locate(int searchKey, IndexCursor& cursor)
 {
-    return 0;
+    return recursiveLocate(searchKey, rootPid, cursor);
 }
 
 /*
@@ -87,3 +128,20 @@ RC BTreeIndex::readForward(IndexCursor& cursor, int& key, RecordId& rid)
 {
     return 0;
 }
+
+
+
+RC BTreeIndex::recursiveLocate(int searchKey, int pid, IndexCursor& cursor){
+    if(nodeVec[pid].isLeaf()){
+        cursor.pid = pid;
+         BTLeafNode current(nodeVec[pid]);
+        return current.locate(searchKey, cursor.eid);
+    }
+    int nextPid;
+    BTNonLeafNode current(nodeVec[pid]);
+    current.locateChildPtr(searchKey, nextPid);
+    return recursiveLocate(searchKey, nextPid, cursor);
+}
+
+
+

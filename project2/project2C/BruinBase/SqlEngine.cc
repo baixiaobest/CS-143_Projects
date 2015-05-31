@@ -14,7 +14,7 @@
 #include <fstream>
 #include "Bruinbase.h"
 #include "SqlEngine.h"
-#include "BTreeNode.h"
+#include "BTreeIndex.h"
 
 using namespace std;
 
@@ -35,35 +35,35 @@ RC SqlEngine::run(FILE* commandline)
   /*****************************LEAF NODE TEST*****************************/
   /*attr 1 is key, 2 is value, 3 is star, 4 is count*/
   
-   PageFile pf, pf2, pf3;
-   pf.open("test.index",'r');
-   BTLeafNode btLeaf, newBtLeaf;
-   if( btLeaf.read(0,pf) !=0 ) fprintf(stdout, "error reading\n");
-
-   RecordId newIndex; newIndex.pid=57; newIndex.sid=8;
-   int siblingKey=0;
-   int size = btLeaf.getKeyCount();
-   btLeaf.insertAndSplit(3,newIndex, newBtLeaf,siblingKey);
-   fprintf(stdout, "Split %d size node into %d and %d, with sibling key of %d\n",size, btLeaf.getKeyCount(), newBtLeaf.getKeyCount(), siblingKey);
-
-   int searchKey = 100; int eid; int returnedKey;
-   RecordId rid;
-   RC rc = newBtLeaf.locate(searchKey, eid);
-   newBtLeaf.readEntry(eid, returnedKey, rid);
-   fprintf(stdout, "located key %d on newBtLeaf with index %d and return code %d\n",searchKey, eid, rc);
-   fprintf(stdout, "retrieved key is %d at index %d\n", returnedKey, eid);
-
-
-   newBtLeaf.setNextNodePtr(10);
-   fprintf(stdout, "btLeaf next node is %d newBtLeaf next node is %d\n", btLeaf.getNextNodePtr(), newBtLeaf.getNextNodePtr());
-
-
-   pf2.open("result.index",'w');
-   if( btLeaf.write(0,pf2) !=0 ) fprintf(stdout, "error writting\n");
-
-   pf3.open("result2.index",'w');
-   if(newBtLeaf.write(0,pf3)!=0) fprintf(stdout, "error writting\n");
-
+//   PageFile pf, pf2, pf3;
+//   pf.open("test.index",'r');
+//   BTLeafNode btLeaf, newBtLeaf;
+//   if( btLeaf.read(0,pf) !=0 ) fprintf(stdout, "error reading\n");
+//
+//   RecordId newIndex; newIndex.pid=57; newIndex.sid=8;
+//   int siblingKey=0;
+//   int size = btLeaf.getKeyCount();
+//   btLeaf.insertAndSplit(3,newIndex, newBtLeaf,siblingKey);
+//   fprintf(stdout, "Split %d size node into %d and %d, with sibling key of %d\n",size, btLeaf.getKeyCount(), newBtLeaf.getKeyCount(), siblingKey);
+//
+//   int searchKey = 100; int eid; int returnedKey;
+//   RecordId rid;
+//   RC rc = newBtLeaf.locate(searchKey, eid);
+//   newBtLeaf.readEntry(eid, returnedKey, rid);
+//   fprintf(stdout, "located key %d on newBtLeaf with index %d and return code %d\n",searchKey, eid, rc);
+//   fprintf(stdout, "retrieved key is %d at index %d\n", returnedKey, eid);
+//
+//
+//   newBtLeaf.setNextNodePtr(10);
+//   fprintf(stdout, "btLeaf next node is %d newBtLeaf next node is %d\n", btLeaf.getNextNodePtr(), newBtLeaf.getNextNodePtr());
+//
+//
+//   pf2.open("result.index",'w');
+//   if( btLeaf.write(0,pf2) !=0 ) fprintf(stdout, "error writting\n");
+//
+//   pf3.open("result2.index",'w');
+//   if(newBtLeaf.write(0,pf3)!=0) fprintf(stdout, "error writting\n");
+//
 
   
 
@@ -78,11 +78,11 @@ RC SqlEngine::run(FILE* commandline)
 //  BTNonLeafNode btNonLeaf, newbtNonLeaf, root;
 //  if(btNonLeaf.read(0,npf) != 0) fprintf(stdout, "error reading\n");
 //
-//  // insertion test
-//  // btNonLeaf.insert(8,34);
-//  // btNonLeaf.insert(35,81);
-//  // btNonLeaf.insert(53,49);
-//  // if(btNonLeaf.write(0,npf2)!=0) fprintf(stdout, "error writting\n");
+//   //insertion test
+//   btNonLeaf.insert(8,34);
+//   btNonLeaf.insert(35,81);
+//   btNonLeaf.insert(53,49);
+//   if(btNonLeaf.write(0,npf2)!=0) fprintf(stdout, "error writting\n");
 //
 //  //split test
 //  int midKey; int originalSize = btNonLeaf.getKeyCount();
@@ -113,6 +113,42 @@ RC SqlEngine::run(FILE* commandline)
 //  //root test
 //  root.initializeRoot(1, 50, 2);
 //  if(root.write(0,npf5) != 0) fprintf(stdout, "error writting\n");
+//    
+    /*************************LEAF FLAG TEST*****************************/
+//    
+//    PageFile input;
+//    input.open("test.index",'r');
+//    SuperNode leaf;
+//    leaf.read(0, input);
+//    if (leaf.isLeaf()) {
+//        fprintf(stdout,"I am leaf\n");
+//    }else{
+//        fprintf(stdout, "I am NOT leaf\n");
+//    }
+
+/*************************INDEX TEST*****************************/
+    
+    BTreeIndex index;
+    if(index.open("indexTest.index", 'r')!=0) fprintf(stdout, "Error opening index\n");
+    IndexCursor cursor;
+    int q5(5), q30(30), q70(70), q0(0), q25(25), q75(75);
+    RC error;
+    error = index.locate(q5, cursor);
+    fprintf(stdout,"Locate %d on pid %d eid %d error code %d, should be pid 1 eid 1\n", q5, cursor.pid, cursor.eid, error);
+    error = index.locate(q30, cursor);
+    fprintf(stdout,"Locate %d on pid %d eid %d error code %d, should be pid 2 eid 1\n", q5, cursor.pid, cursor.eid, error);
+    error = index.locate(q70, cursor);
+    fprintf(stdout,"Locate %d on pid %d eid %d error code %d, should be pid 3 eid 1\n", q5, cursor.pid, cursor.eid, error);
+    error = index.locate(q0, cursor);
+    fprintf(stdout,"Locate %d on pid %d eid %d error code %d, should be pid 1 eid 0\n", q0, cursor.pid, cursor.eid, error);
+    error = index.locate(q25, cursor);
+    fprintf(stdout,"Locate %d on pid %d eid %d error code %d, should be pid 2 eid 0\n", q25, cursor.pid, cursor.eid, error);
+    error = index.locate(q75, cursor);
+    fprintf(stdout,"Locate %d on pid %d eid %d error code %d, should be pid 3 eid 1\n", q75, cursor.pid, cursor.eid, error);
+    
+    
+    //if(index.close()!=0) fprintf(stdout, "Error closing index\n");
+    
 
   return 0;
 }

@@ -13,6 +13,8 @@
 #include "Bruinbase.h"
 #include "PageFile.h"
 #include "RecordFile.h"
+#include "BTreeNode.h"
+#include <vector>
              
 /**
  * The data structure to point to a particular entry at a b+tree leaf node.
@@ -33,7 +35,7 @@ typedef struct {
  */
 class BTreeIndex {
  public:
-  BTreeIndex();
+    BTreeIndex();
 
   /**
    * Open the index file in read or write mode.
@@ -89,10 +91,25 @@ class BTreeIndex {
   RC readForward(IndexCursor& cursor, int& key, RecordId& rid);
   
  private:
+
+  /**
+   * Search in nodeVec for search key recursively
+   * @param searchKey search key for query
+   * @param pid page id of node under inspection
+   * @param cursor the cursor that points to leaf node and coresponding entry index where search key is found.
+   * @return 0 if found, error code if not found
+   **/
+  RC recursiveLocate(int searchKey, int pid, IndexCursor& cursor);
+    
+    
   PageFile pf;         /// the PageFile used to store the actual b+tree in disk
 
   PageId   rootPid;    /// the PageId of the root node
   int      treeHeight; /// the height of the tree
+  
+  std::vector<SuperNode> nodeVec;
+  bool read, write;
+    
   /// Note that the content of the above two variables will be gone when
   /// this class is destructed. Make sure to store the values of the two 
   /// variables in disk, so that they can be reconstructed when the index

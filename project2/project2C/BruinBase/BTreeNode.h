@@ -206,6 +206,8 @@ class BTNonLeafNode : public SuperNode{
     * @return 0 if successful. Return an error code if there is an error.
     */
     RC initializeRoot(PageId pid1, int key, PageId pid2);
-}; 
+private:
+    bool insertFlag;
+};
 
 #endif /* BTREENODE_H */

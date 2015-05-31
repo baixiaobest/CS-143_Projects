@@ -165,9 +165,23 @@ RC SqlEngine::run(FILE* commandline)
     
     if(index.open("indexTest.txt", 'w')!=0) fprintf(stdout, "Error opening index\n");
     RecordId rid; rid.pid = 1; rid.sid = 3;
-    //index.insert(45, rid);
+    index.insert(45, rid);
     rid.pid = 1; rid.sid = 4;
     index.insert(47, rid);
+    rid.pid = 1; rid.sid = 5;
+    index.insert(16, rid);
+    
+    rid.pid = 1; rid.sid = 6;
+    index.insert(42, rid);
+    rid.pid = 1; rid.sid = 7;
+    index.insert(44, rid);
+    
+    rid.pid = 1; rid.sid = 8;
+    index.insert(25, rid);
+    rid.pid = 1; rid.sid = 9;
+    index.insert(35, rid);
+    
+    
     if(index.close()!=0) fprintf(stdout, "Error closing index\n");
 
   return 0;

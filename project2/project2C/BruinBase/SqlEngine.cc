@@ -129,13 +129,13 @@ RC SqlEngine::run(FILE* commandline)
 /*************************INDEX TEST*****************************/
     
     BTreeIndex index;
-    if(index.open("indexTest.txt", 'r')!=0) fprintf(stdout, "Error opening index\n");
-    IndexCursor cursor, iterator;
-    int q5(5), q30(30), q70(70), q0(0), q25(25), q75(75);
-    RC error;
-    error = index.locate(q5, cursor);
-    fprintf(stdout,"Locate %d on pid %d eid %d error code %d, should be pid 1 eid 1\n", q5, cursor.pid, cursor.eid, error);
-    iterator = cursor;
+//    if(index.open("indexTest.txt", 'r')!=0) fprintf(stdout, "Error opening index\n");
+//    IndexCursor cursor, iterator;
+//    int q5(5), q30(30), q70(70), q0(0), q25(25), q75(75);
+//    RC error;
+//    error = index.locate(q5, cursor);
+//    fprintf(stdout,"Locate %d on pid %d eid %d error code %d, should be pid 1 eid 1\n", q5, cursor.pid, cursor.eid, error);
+//    iterator = cursor;
 //    error = index.locate(q30, cursor);
 //    fprintf(stdout,"Locate %d on pid %d eid %d error code %d, should be pid 2 eid 1\n", q5, cursor.pid, cursor.eid, error);
 //    error = index.locate(q70, cursor);
@@ -147,23 +147,28 @@ RC SqlEngine::run(FILE* commandline)
 //    error = index.locate(q75, cursor);
 //    fprintf(stdout,"Locate %d on pid %d eid %d error code %d, should be pid 3 eid 1\n", q75, cursor.pid, cursor.eid, error);
     
-    int key = q5;
-    RecordId rid;
-    fprintf(stdout, "Starting leaf node traversal...\n");
-    bool endOfTree = false;
-    while (!endOfTree) {
-        int pid = iterator.pid;
-        int eid = iterator.eid;
-        RC status = index.readForward(iterator, key, rid);
-        fprintf(stdout, "key %d at pid %d eid %d contains record pid%d sid %d\n", key, pid, eid, rid.pid, rid.sid);
-        if (status == RC_END_OF_TREE) {
-            endOfTree = true;
-        }
-    }
+//    int key = q5;
+//    RecordId rid;
+//    fprintf(stdout, "Starting leaf node traversal...\n");
+//    bool endOfTree = false;
+//    while (!endOfTree) {
+//        int pid = iterator.pid;
+//        int eid = iterator.eid;
+//        RC status = index.readForward(iterator, key, rid);
+//        fprintf(stdout, "key %d at pid %d eid %d contains record pid%d sid %d\n", key, pid, eid, rid.pid, rid.sid);
+//        if (status == RC_END_OF_TREE) {
+//            endOfTree = true;
+//        }
+//    }
+//    if(index.close()!=0) fprintf(stdout, "Error closing index\n");
+/*******************************INDEX INSERTION TEST**************************************/
     
-    
-    //if(index.close()!=0) fprintf(stdout, "Error closing index\n");
-    
+    if(index.open("indexTest.txt", 'w')!=0) fprintf(stdout, "Error opening index\n");
+    RecordId rid; rid.pid = 1; rid.sid = 3;
+    //index.insert(45, rid);
+    rid.pid = 1; rid.sid = 4;
+    index.insert(47, rid);
+    if(index.close()!=0) fprintf(stdout, "Error closing index\n");
 
   return 0;
 }

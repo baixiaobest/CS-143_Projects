@@ -119,7 +119,7 @@ RC SuperNode::setNextNodePtr(PageId pid)
  */
 RC BTLeafNode::insert(int key, const RecordId& rid)
 { 
-	if(keyCount == MAX_KEY) return RC_NODE_FULL;
+	if(getKeyCount() == MAX_KEY) return RC_NODE_FULL;
 	record_key_pair newIndex;
 	newIndex.rid = rid;
 	newIndex.key = key;

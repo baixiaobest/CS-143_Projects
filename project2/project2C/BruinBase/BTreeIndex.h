@@ -101,6 +101,7 @@ class BTreeIndex {
    **/
   RC recursiveLocate(int searchKey, int pid, IndexCursor& cursor);
     
+  RC recursiveInsert(int key, const RecordId& rid, int myPid, int parentPid, int& newKey, int& newPagePtr);
     
   PageFile pf;         /// the PageFile used to store the actual b+tree in disk
 

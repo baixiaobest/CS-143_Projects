@@ -126,7 +126,21 @@ RC BTreeIndex::locate(int searchKey, IndexCursor& cursor)
  */
 RC BTreeIndex::readForward(IndexCursor& cursor, int& key, RecordId& rid)
 {
-    return 0;
+    //readForward is for leaf
+    if(!nodeVec[cursor.pid].isLeaf()) return RC_INVALID_CURSOR;
+    BTLeafNode leaf(nodeVec[cursor.pid]);
+    RC status = leaf.readEntry(cursor.eid, key, rid);
+    // not the last key in node
+    if(cursor.eid < leaf.getKeyCount()-1){
+        cursor.eid++;
+    }else{ //last key in node
+        int nextPage = leaf.getNextNodePtr();
+        if(nextPage==-1)
+            return RC_END_OF_TREE;
+        cursor.pid = nextPage;
+        cursor.eid = 0;
+    }
+    return status;
 }
 
 
@@ -134,7 +148,7 @@ RC BTreeIndex::readForward(IndexCursor& cursor, int& key, RecordId& rid)
 RC BTreeIndex::recursiveLocate(int searchKey, int pid, IndexCursor& cursor){
     if(nodeVec[pid].isLeaf()){
         cursor.pid = pid;
-         BTLeafNode current(nodeVec[pid]);
+        BTLeafNode current(nodeVec[pid]);
         return current.locate(searchKey, cursor.eid);
     }
     int nextPid;

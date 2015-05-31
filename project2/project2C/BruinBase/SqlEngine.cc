@@ -181,7 +181,15 @@ RC SqlEngine::run(FILE* commandline)
     rid.pid = 1; rid.sid = 9;
     index.insert(35, rid);
     
+    rid.pid = 1; rid.sid = 10;
+    index.insert(27, rid);
+    rid.pid = 1; rid.sid = 11;
+    index.insert(32, rid);
     
+    rid.pid = 1; rid.sid = 12;
+    index.insert(22, rid);
+    rid.pid = 1; rid.sid = 13;
+    index.insert(23, rid);
     if(index.close()!=0) fprintf(stdout, "Error closing index\n");
 
   return 0;

@@ -23,6 +23,8 @@ const int MAX_KEY = 74;
 class SuperNode{
 
 public:
+    SuperNode(){m_isLeaf = false;}
+    bool isLeaf(){return m_isLeaf;}
       /**
     * Read the content of the node from the page pid in the PageFile pf.
     * @param pid[IN] the PageId to read
@@ -45,7 +47,11 @@ public:
     */
     int getKeyCount();
 
-
+    /**
+     * Return the pid of the next slibling node.
+     * @return the PageId of the next sibling node
+     */
+    PageId getNextNodePtr();
 
 
     /**
@@ -74,7 +80,7 @@ protected:
     std::vector<record_key_pair> recordKeyVec;
     PageId nextPage;
     int keyCount;
-
+    bool m_isLeaf;
 };
 
 /**
@@ -85,6 +91,10 @@ class BTLeafNode: public SuperNode {
 
     BTLeafNode(){
         keyCount = 0;
+        m_isLeaf = true;
+    }
+    BTLeafNode(const SuperNode& other):SuperNode(other){
+        m_isLeaf = true;
     }
    /**
     * Insert the (key, rid) pair to the node.
@@ -130,12 +140,6 @@ class BTLeafNode: public SuperNode {
     */
     RC readEntry(int eid, int& key, RecordId& rid);
 
-   /**
-    * Return the pid of the next slibling node.
-    * @return the PageId of the next sibling node 
-    */
-    PageId getNextNodePtr();
-
 
 }; 
 
@@ -156,6 +160,11 @@ class BTLeafNode: public SuperNode {
  */
 class BTNonLeafNode : public SuperNode{
   public:
+    BTNonLeafNode():SuperNode(){m_isLeaf = false;}
+    
+    BTNonLeafNode(const SuperNode& other):SuperNode(other){
+        m_isLeaf = false;
+    }
    /**
     * Insert a (key, pid) pair to the node.
     * Remember that all keys inside a B+tree node should be kept sorted.
@@ -197,6 +206,8 @@ class BTNonLeafNode : public SuperNode{
     * @return 0 if successful. Return an error code if there is an error.
     */
     RC initializeRoot(PageId pid1, int key, PageId pid2);
-}; 
+private:
+    bool insertFlag;
+};
 
 #endif /* BTREENODE_H */

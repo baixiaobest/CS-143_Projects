@@ -15,7 +15,7 @@
 #include <vector>
 #include <string>
 
-const int MAX_KEY = 4;
+const int MAX_KEY = 74;
 
 /*
 * Super Node, the mother of twins

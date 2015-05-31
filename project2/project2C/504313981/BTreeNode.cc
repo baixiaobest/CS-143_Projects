@@ -22,6 +22,14 @@ RC SuperNode::read(PageId pid, const PageFile& pf)
 			i++;
 		}
 		if( (char)buffer[i] == 'X'){
+            if((char)buffer[i+1]=='L'){
+                m_isLeaf = true;
+            }
+            if(buffer[i-1]=='N'){
+                nextPage = -1;
+                m_isLeaf = true;
+                break;
+            }
 			int value = 0;
 			for(int j=0; j<pair.size(); j++){
 				value *= 16;
@@ -60,7 +68,13 @@ RC SuperNode::write(PageId pid, PageFile& pf)
 		std::string keyStr = intToHex(recordKeyVec[i].key, 4);
 		strBuff += pidStr+','+sidStr+','+keyStr+' ';
 	}
-	std::string nextPageStr = intToHex(nextPage, 3) + 'X';
+    std::string nextPageStr = intToHex(nextPage, 3) + 'X';
+    if(nextPage == -1){
+        nextPageStr = "NX";
+    }
+    if (m_isLeaf) {
+        nextPageStr += 'L';
+    }
 	strBuff += nextPageStr;
 	for(int k=0; k<strBuff.size(); k++){
 			buffer[bufferPtr] = strBuff[k];
@@ -97,9 +111,6 @@ RC SuperNode::setNextNodePtr(PageId pid)
 
 /*************************************LEAF NODE***************************************/
 
-
-
-
 /*
  * Insert a (key, rid) pair to the node.
  * @param key[IN] the key to insert
@@ -108,7 +119,7 @@ RC SuperNode::setNextNodePtr(PageId pid)
  */
 RC BTLeafNode::insert(int key, const RecordId& rid)
 { 
-	if(keyCount == MAX_KEY) return RC_NODE_FULL;
+	if(getKeyCount() == MAX_KEY) return RC_NODE_FULL;
 	record_key_pair newIndex;
 	newIndex.rid = rid;
 	newIndex.key = key;
@@ -199,7 +210,7 @@ RC BTLeafNode::readEntry(int eid, int& key, RecordId& rid)
  * Return the pid of the next slibling node.
  * @return the PageId of the next sibling node 
  */
-PageId BTLeafNode::getNextNodePtr()
+PageId SuperNode::getNextNodePtr()
 { 
 	return nextPage; 
 }
@@ -231,8 +242,8 @@ std::string intToHex(int number, int length){
  */
 RC BTNonLeafNode::insert(int key, PageId pid)
 { 
-	if(recordKeyVec.size() == MAX_KEY) return RC_NODE_FULL;
-
+	if(recordKeyVec.size() == MAX_KEY && !insertFlag) return RC_NODE_FULL;
+    if(insertFlag) insertFlag = false;
 	record_key_pair newData;
 	newData.key = key; newData.rid.sid = 0;
 	bool insertToEnd = true;
@@ -244,7 +255,8 @@ RC BTNonLeafNode::insert(int key, PageId pid)
 		if(recordKeyVec[i].key > key){
 			//insert in the very front
 			if(i==0){
-				newData.rid.pid = pid;
+                newData.rid.pid = recordKeyVec[0].rid.pid;
+                recordKeyVec[0].rid.pid = pid;
 				recordKeyVec.insert(recordKeyVec.begin(), newData);
 			}
 			else{  //insert in the middle
@@ -277,7 +289,8 @@ RC BTNonLeafNode::insert(int key, PageId pid)
  */
 RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, int& midKey)
 { 
-	//if(getKeyCount()<MAX_KEY || sibling.getKeyCount()!=0) return RC_NODE_FULL;
+	if(getKeyCount()<MAX_KEY || sibling.getKeyCount()!=0) return RC_NODE_FULL;
+    insertFlag = true;
 	insert(key, pid);
 	int middle = recordKeyVec.size()/2;
 	sibling.setNextNodePtr(recordKeyVec[middle+1].rid.pid);
@@ -330,6 +343,7 @@ RC BTNonLeafNode::initializeRoot(PageId pid1, int key, PageId pid2)
 	recordKeyVec.clear();
 	record_key_pair rootData;
 	rootData.rid.pid = pid1;
+    rootData.rid.sid = 0;
 	rootData.key = key;
 	nextPage = pid2;
 	recordKeyVec.push_back(rootData);

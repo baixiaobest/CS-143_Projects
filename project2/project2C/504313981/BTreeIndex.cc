@@ -17,7 +17,7 @@ using namespace std;
  */
 BTreeIndex::BTreeIndex()
 {
-    rootPid = -1;
+    rootPid = 0;
 }
 
 /*
@@ -29,6 +29,42 @@ BTreeIndex::BTreeIndex()
  */
 RC BTreeIndex::open(const string& indexname, char mode)
 {
+    read = false;
+    write = false;
+    switch (mode) {
+        case 'r':
+        case 'R':
+            read = true;
+            break;
+        case 'w':
+        case 'W':
+            write = true;
+            break;
+        default:
+            break;
+    }
+    if (read || write) {
+        pf.open(indexname, 'r');
+        for (int i=0; i<pf.endPid(); i++) {
+            SuperNode sNode;
+            sNode.read(i,pf);
+            if (sNode.isLeaf()) {
+                BTLeafNode newNode(sNode);
+                nodeVec.push_back(newNode);
+            }else{
+                BTNonLeafNode newNode(sNode);
+                nodeVec.push_back(newNode);
+            }
+        }
+        pf.close();
+    }
+    if(write){
+        pf.open(indexname, 'w');
+    }
+    if(!write && !read){
+        return RC_INVALID_FILE_FORMAT; //invalid mode
+    }
+    
     return 0;
 }
 
@@ -38,6 +74,11 @@ RC BTreeIndex::open(const string& indexname, char mode)
  */
 RC BTreeIndex::close()
 {
+    if(write){
+        for (int i=0; i<nodeVec.size(); i++) {
+            nodeVec[i].write(i, pf);
+        }
+    }
     return 0;
 }
 
@@ -49,7 +90,8 @@ RC BTreeIndex::close()
  */
 RC BTreeIndex::insert(int key, const RecordId& rid)
 {
-    return 0;
+    int newKey, newPagePtr;
+    return recursiveInsert(key, rid, rootPid, -1, newKey, newPagePtr);
 }
 
 /**
@@ -72,7 +114,7 @@ RC BTreeIndex::insert(int key, const RecordId& rid)
  */
 RC BTreeIndex::locate(int searchKey, IndexCursor& cursor)
 {
-    return 0;
+    return recursiveLocate(searchKey, rootPid, cursor);
 }
 
 /*
@@ -85,5 +127,119 @@ RC BTreeIndex::locate(int searchKey, IndexCursor& cursor)
  */
 RC BTreeIndex::readForward(IndexCursor& cursor, int& key, RecordId& rid)
 {
-    return 0;
+    //readForward is for leaf
+    if(!nodeVec[cursor.pid].isLeaf()) return RC_INVALID_CURSOR;
+    BTLeafNode leaf(nodeVec[cursor.pid]);
+    RC status = leaf.readEntry(cursor.eid, key, rid);
+    // not the last key in node
+    if(cursor.eid < leaf.getKeyCount()-1){
+        cursor.eid++;
+    }else{ //last key in node
+        int nextPage = leaf.getNextNodePtr();
+        if(nextPage==-1)
+            return RC_END_OF_TREE;
+        cursor.pid = nextPage;
+        cursor.eid = 0;
+    }
+    return status;
+}
+
+
+
+RC BTreeIndex::recursiveLocate(int searchKey, int pid, IndexCursor& cursor){
+    if(nodeVec[pid].isLeaf()){
+        cursor.pid = pid;
+        BTLeafNode current(nodeVec[pid]);
+        return current.locate(searchKey, cursor.eid);
+    }
+    int nextPid;
+    BTNonLeafNode current(nodeVec[pid]);
+    current.locateChildPtr(searchKey, nextPid);
+    return recursiveLocate(searchKey, nextPid, cursor);
+}
+
+
+RC BTreeIndex::recursiveInsert(int key, const RecordId& rid, int myPid, int parentPid, int& newKey, int& newPagePtr){
+    //BASE CASE: Leaf Node Insert
+    //try to insert to leaf node, if success, return 0
+    
+    //if insertion fails, insert and split, create new sibling node
+    //and push new node to nodeVec
+    //return and indicate to caller that insertion has overflow.
+    //also tell caller that key and pid of new sibling node
+    
+    if (nodeVec[myPid].isLeaf()) {
+        BTLeafNode currentNode(nodeVec[myPid]);
+        RC status = currentNode.insert(key, rid);
+        if (status==RC_NODE_FULL ) {
+            BTLeafNode sibling;
+            currentNode.insertAndSplit(key, rid, sibling, newKey);
+            newPagePtr = nodeVec.size();
+            sibling.setNextNodePtr(currentNode.getNextNodePtr());
+            currentNode.setNextNodePtr(newPagePtr);
+            nodeVec.push_back(sibling);
+            nodeVec[myPid] = currentNode;
+            return RC_NODE_FULL;
+        }
+        nodeVec[myPid] = currentNode;
+        return 0;
+    }else{
+    
+    
+        //STEP CASE: Non Leaf Node Insert
+        //recursively call itself, by passing next pointer that points
+        //to next node.
+        
+        BTNonLeafNode currentNode(nodeVec[myPid]);
+        int childPid;
+        int childNewKey;
+        int childNewPagePtr;
+        currentNode.locateChildPtr(key, childPid);
+        RC status = recursiveInsert(key, rid, childPid, myPid, childNewKey, childNewPagePtr);
+    
+        //If returned status from calle notifies the overflow,
+        //get the returned key and new sibiling node pointer and
+        //try to insert to itself
+        if(status==RC_NODE_FULL){
+    
+            status = currentNode.insert(childNewKey, childNewPagePtr);
+            
+            //If insertion to it self fails, then two cases
+            //will be considered
+            if(status == RC_NODE_FULL){
+                //Case 1: current node is root node, insert the new key to
+                //itself and split into two new nodes and a middle key.
+                //initialize the root with middle key and put two new nodes
+                //to the back of nodeVec. Make sure pointers of root are correct.
+                if(myPid == rootPid){
+                    BTNonLeafNode sibling, root;
+                    int midKey;
+                    currentNode.insertAndSplit(childNewKey, childNewPagePtr, sibling, midKey);
+                    root.initializeRoot(nodeVec.size(), midKey, nodeVec.size()+1);
+                    nodeVec[rootPid] = root;
+                    nodeVec.push_back(currentNode);
+                    nodeVec.push_back(sibling);
+                    return 0;
+                }
+                //Case 2: current node is not root node, simply insert and split
+                //the current node into two nodes and middle key, push the sibling
+                //node to the nodeVec, and notify the parent insertion has overflow,
+                //also pass the key and pid of new node to caller(parent).
+                else{
+                    BTNonLeafNode sibling;
+                    int midKey;
+                    currentNode.insertAndSplit(childNewKey, childNewPagePtr, sibling, midKey);
+                    newPagePtr = nodeVec.size();
+                    newKey = midKey;
+                    nodeVec.push_back(sibling);
+                    nodeVec[myPid] = currentNode;
+                    return RC_NODE_FULL;
+                }
+            }
+            nodeVec[myPid] = currentNode;
+            return 0;
+        }else{
+            return 0;
+        }
+    }
 }

@@ -44,7 +44,7 @@ RC BTreeIndex::open(const string& indexname, char mode)
             break;
     }
     if (read || write) {
-        if(pf.open(indexname, 'r')!=0 && read) return RC_FILE_OPEN_FAILED;
+        pf.open(indexname, 'r');
         for (int i=0; i<pf.endPid(); i++) {
             SuperNode sNode;
             sNode.read(i,pf);

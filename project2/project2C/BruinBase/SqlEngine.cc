@@ -191,6 +191,25 @@ RC SqlEngine::run(FILE* commandline)
     rid.pid = 1; rid.sid = 13;
     index.insert(23, rid);
     if(index.close()!=0) fprintf(stdout, "Error closing index\n");
+    
+    
+//    if(index.open("empty.txt",'w')!=0)fprintf(stdout,"Error opening index\n");
+//    RecordId rid; rid.pid = 1; rid.sid = 0;
+//    index.insert(10, rid);
+//    rid.pid = 1; rid.sid = 1;
+//    index.insert(20, rid);
+//    rid.pid = 1; rid.sid = 2;
+//    index.insert(30, rid);
+//    rid.pid = 1; rid.sid = 3;
+//    index.insert(40, rid);
+//    rid.pid = 1; rid.sid = 4;
+//    index.insert(50, rid);
+//    
+//    rid.pid = 1; rid.sid = 5;
+//    index.insert(22, rid);
+//    rid.pid = 1; rid.sid = 6;
+//    index.insert(25, rid);
+//    if(index.close()!=0) fprintf(stdout, "Error closing index\n");
 
   return 0;
 }

@@ -168,18 +168,44 @@ RC BTreeIndex::recursiveInsert(int key, const RecordId& rid, int myPid, int pare
     //return and indicate to caller that insertion has overflow.
     //also tell caller that key and pid of new sibling node
     
+    //if you are inserting to empty tree, make the node as
+    //the leaf, and insert the value to leaf directly
+    
+    if(nodeVec.size()==0){ //in the case of index is empty
+        BTLeafNode newNode;
+        newNode.setNextNodePtr(-1);
+        newNode.insert(key, rid);
+        nodeVec.push_back(newNode);
+        return 0;
+    }
+    
     if (nodeVec[myPid].isLeaf()) {
         BTLeafNode currentNode(nodeVec[myPid]);
         RC status = currentNode.insert(key, rid);
         if (status==RC_NODE_FULL ) {
-            BTLeafNode sibling;
-            currentNode.insertAndSplit(key, rid, sibling, newKey);
-            newPagePtr = nodeVec.size();
-            sibling.setNextNodePtr(currentNode.getNextNodePtr());
-            currentNode.setNextNodePtr(newPagePtr);
-            nodeVec.push_back(sibling);
-            nodeVec[myPid] = currentNode;
-            return RC_NODE_FULL;
+            //non-root leaf node
+            if(nodeVec.size()>1){
+                BTLeafNode sibling;
+                currentNode.insertAndSplit(key, rid, sibling, newKey);
+                newPagePtr = nodeVec.size();
+                sibling.setNextNodePtr(currentNode.getNextNodePtr());
+                currentNode.setNextNodePtr(newPagePtr);
+                nodeVec.push_back(sibling);
+                nodeVec[myPid] = currentNode;
+                return RC_NODE_FULL;
+            }else{
+                //insertion for root leaf node, should take special care
+                BTLeafNode sibling;
+                currentNode.insertAndSplit(key, rid, sibling, newKey);
+                BTNonLeafNode root;
+                root.initializeRoot(1, newKey, 2);
+                currentNode.setNextNodePtr(2);
+                nodeVec[0] = root;
+                sibling.setNextNodePtr(-1);
+                nodeVec.push_back(currentNode);
+                nodeVec.push_back(sibling);
+                return 0;
+            }
         }
         nodeVec[myPid] = currentNode;
         return 0;

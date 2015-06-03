@@ -91,6 +91,53 @@ class BTreeIndex {
   RC readForward(IndexCursor& cursor, int& key, RecordId& rid);
   
  private:
+    
+  class NodeVector{
+  public:
+      NodeVector(){m_size=0;};
+      NodeVector(PageFile* pf){m_pf = pf; m_size=0;}
+      SuperNode operator[] (unsigned int index){
+          if(index >= m_size) throw;
+          return get(index);
+      }
+      SuperNode& operator ()(unsigned int index){
+          if(index>=m_size) throw;
+          return get(index);
+      }
+      void push_back(SuperNode newNode){
+          pidVec.push_back(m_size);
+          myVec.push_back(newNode);
+          m_size++;
+      }
+      int size(){return m_size;}
+      void fakeRead(){m_size++;}
+  private:
+      SuperNode& get(unsigned int index){ //index is actually pid of index file
+          //check in cache (pidVec), if node has been accessed
+          for (int i=0; i<pidVec.size(); i++) {
+              //grab from cache
+              if(pidVec[i]==index){
+                  return myVec[i];
+              }
+          }
+          //access from disk
+          SuperNode sNode;
+          sNode.read(index,*m_pf);
+          if (sNode.isLeaf()) {
+              BTLeafNode newNode(sNode);
+              myVec.push_back(newNode);
+          }else{
+              BTNonLeafNode newNode(sNode);
+              myVec.push_back(newNode);
+          }
+          pidVec.push_back(index);
+          return myVec[myVec.size()-1];
+      }
+      std::vector<SuperNode> myVec;
+      std::vector<int> pidVec;
+      PageFile* m_pf;
+      int m_size;
+  };
 
   /**
    * Search in nodeVec for search key recursively
@@ -108,7 +155,7 @@ class BTreeIndex {
   PageId   rootPid;    /// the PageId of the root node
   int      treeHeight; /// the height of the tree
   
-  std::vector<SuperNode> nodeVec;
+  NodeVector nodeVec;
   bool read, write;
     
   /// Note that the content of the above two variables will be gone when

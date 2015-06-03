@@ -15,7 +15,7 @@ using namespace std;
 /*
  * BTreeIndex constructor
  */
-BTreeIndex::BTreeIndex()
+BTreeIndex::BTreeIndex(): nodeVec(&pf)
 {
     rootPid = 0;
 }
@@ -46,17 +46,8 @@ RC BTreeIndex::open(const string& indexname, char mode)
     if (read || write) {
         if(pf.open(indexname, 'r')!=0 && read) return RC_FILE_OPEN_FAILED;
         for (int i=0; i<pf.endPid(); i++) {
-            SuperNode sNode;
-            sNode.read(i,pf);
-            if (sNode.isLeaf()) {
-                BTLeafNode newNode(sNode);
-                nodeVec.push_back(newNode);
-            }else{
-                BTNonLeafNode newNode(sNode);
-                nodeVec.push_back(newNode);
-            }
+            nodeVec.fakeRead();
         }
-        pf.close();
     }
     if(write){
         pf.open(indexname, 'w');
@@ -191,7 +182,7 @@ RC BTreeIndex::recursiveInsert(int key, const RecordId& rid, int myPid, int pare
                 sibling.setNextNodePtr(currentNode.getNextNodePtr());
                 currentNode.setNextNodePtr(newPagePtr);
                 nodeVec.push_back(sibling);
-                nodeVec[myPid] = currentNode;
+                nodeVec(myPid) = currentNode;
                 return RC_NODE_FULL;
             }else{
                 //insertion for root leaf node, should take special care
@@ -200,14 +191,14 @@ RC BTreeIndex::recursiveInsert(int key, const RecordId& rid, int myPid, int pare
                 BTNonLeafNode root;
                 root.initializeRoot(1, newKey, 2);
                 currentNode.setNextNodePtr(2);
-                nodeVec[0] = root;
+                nodeVec(0) = root;
                 sibling.setNextNodePtr(-1);
                 nodeVec.push_back(currentNode);
                 nodeVec.push_back(sibling);
                 return 0;
             }
         }
-        nodeVec[myPid] = currentNode;
+        nodeVec(myPid) = currentNode;
         return 0;
     }else{
     
@@ -242,7 +233,7 @@ RC BTreeIndex::recursiveInsert(int key, const RecordId& rid, int myPid, int pare
                     int midKey;
                     currentNode.insertAndSplit(childNewKey, childNewPagePtr, sibling, midKey);
                     root.initializeRoot(nodeVec.size(), midKey, nodeVec.size()+1);
-                    nodeVec[rootPid] = root;
+                    nodeVec(rootPid) = root;
                     nodeVec.push_back(currentNode);
                     nodeVec.push_back(sibling);
                     return 0;
@@ -258,11 +249,11 @@ RC BTreeIndex::recursiveInsert(int key, const RecordId& rid, int myPid, int pare
                     newPagePtr = nodeVec.size();
                     newKey = midKey;
                     nodeVec.push_back(sibling);
-                    nodeVec[myPid] = currentNode;
+                    nodeVec(myPid) = currentNode;
                     return RC_NODE_FULL;
                 }
             }
-            nodeVec[myPid] = currentNode;
+            nodeVec(myPid) = currentNode;
             return 0;
         }else{
             return 0;

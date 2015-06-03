@@ -54,6 +54,26 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
     fprintf(stderr, "Error: table %s does not exist\n", table.c_str());
     return rc;
   }
+   
+  /* There is no need to go through index file when
+     1.Select value with condition only on Value.
+     2.Count(*) along with condition on Value.
+     3.* without any key.
+   */
+    int keyCondCount = 0; int valueCondCount = 0;
+    for (int i=0; i<cond.size(); i++) {
+        if (cond[i].attr==1) {
+            keyCondCount++;
+        }else if(cond[i].attr==2){
+            valueCondCount++;
+        }
+    }
+    if ((attr==2 && keyCondCount==0)
+        || (attr==3 && keyCondCount==0 && valueCondCount!=0)
+        || (attr==4)) {
+        indexExists = false;
+    }
+    
 
   // scan the table file from the beginning if index file does not exist
   if(!indexExists){
@@ -144,16 +164,24 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
                   endingKey = stoi(cond[i].value);
               }
               if(cond[i].comp==SelCond::EQ){
-                  equalKeyVec.push_back(stoi(cond[i].value));
+                  int newKey = stoi(cond[i].value);
+                  for (int i=0; i<equalKeyVec.size(); i++) {//different equal keys are not allowed
+                      if(equalKeyVec[i]!=newKey)
+                        goto exit_select;
+                  }
+                  //equal key out of range is not allowed
+                  if(newKey<startingKey || (newKey>endingKey && endingKey!=-1))
+                    goto exit_select;
+                  equalKeyVec.push_back(newKey);
+                  startingKey = newKey; endingKey = newKey;
+              }
+              if (cond[i].comp==SelCond::NE) {
+                  notEqualKeyVec.push_back(stoi(cond[i].value));
               }
           }else{ //condition on value
               comparingStr.push_back(cond[i].value);
               comp.push_back(cond[i].comp);
           }
-      }
-      for (int k=0; k<equalKeyVec.size(); k++) {
-          if(equalKeyVec[k]<startingKey || (equalKeyVec[k]>endingKey && endingKey!=-1))
-              goto exit_select;
       }
       //locate the starting point and start reading from there
       IndexCursor cursor;
@@ -177,6 +205,10 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
               if(discardCurrentKey){
                    goto next_one;
               }
+          }
+          for (int ne=0; ne<notEqualKeyVec.size(); ne++) {
+              if(key==notEqualKeyVec[ne])
+                goto next_one;
           }
           switch (attr) {
               case 1:  // SELECT key

@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SqlEngine.cc"
-            timestampString = "455063154.593183"
+            timestampString = "455066137.454433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
             landmarkName = "SqlEngine::select(int attr, const string&amp; table, const vector&lt;SelCond&gt;&amp; cond)"
             landmarkType = "5">
          </BreakpointContent>
@@ -122,11 +122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SqlEngine.cc"
-            timestampString = "455063476.216734"
+            timestampString = "455066137.454433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "191"
-            endingLineNumber = "191"
+            startingLineNumber = "214"
+            endingLineNumber = "214"
             landmarkName = "SqlEngine::select(int attr, const string&amp; table, const vector&lt;SelCond&gt;&amp; cond)"
             landmarkType = "5">
          </BreakpointContent>
@@ -138,43 +138,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SqlEngine.cc"
-            timestampString = "455063541.024218"
+            timestampString = "455066137.454433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "178"
-            endingLineNumber = "178"
-            landmarkName = "SqlEngine::select(int attr, const string&amp; table, const vector&lt;SelCond&gt;&amp; cond)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SqlEngine.cc"
-            timestampString = "455063558.047172"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "179"
-            endingLineNumber = "179"
-            landmarkName = "SqlEngine::select(int attr, const string&amp; table, const vector&lt;SelCond&gt;&amp; cond)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SqlEngine.cc"
-            timestampString = "455063593.275533"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "195"
-            endingLineNumber = "195"
+            startingLineNumber = "153"
+            endingLineNumber = "153"
             landmarkName = "SqlEngine::select(int attr, const string&amp; table, const vector&lt;SelCond&gt;&amp; cond)"
             landmarkType = "5">
          </BreakpointContent>

@@ -69,8 +69,9 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
         }
     }
     if ((attr==2 && keyCondCount==0)
-        || (attr==3 && keyCondCount==0 && valueCondCount!=0)
-        || (attr==4)) {
+        || (attr==4 && keyCondCount==0 && valueCondCount!=0)
+        || (attr==3 && keyCondCount==0))
+    {
         indexExists = false;
     }
     
@@ -209,6 +210,24 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
           for (int ne=0; ne<notEqualKeyVec.size(); ne++) {
               if(key==notEqualKeyVec[ne])
                 goto next_one;
+          }
+          for (int strIndex=0; strIndex<comparingStr.size(); strIndex++) {
+              rf.read(rid, key, value);
+              int compResult = strcmp(value.c_str(), comparingStr[strIndex]);
+              switch (comp[strIndex]) {
+                  case SelCond::EQ:
+                      if(compResult!=0) goto next_one; break;
+                  case SelCond::NE:
+                      if(compResult==0) goto next_one; break;
+                  case SelCond::LT:
+                      if(compResult>=0) goto next_one; break;
+                  case SelCond::GT:
+                      if(compResult<=0) goto next_one; break;
+                  case SelCond::LE:
+                      if(compResult>0) goto next_one; break;
+                  case SelCond::GE:
+                      if(compResult<0) goto next_one; break;
+              }
           }
           switch (attr) {
               case 1:  // SELECT key

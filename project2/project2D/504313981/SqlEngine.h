@@ -18,7 +18,7 @@
  * data structure to represent a condition in the WHERE clause
  */
 struct SelCond {
-  int attr;     // attribute: 1 - key column,  2 - value column
+  int attr;     // attribute: 1 - key column,  2 - value column, 3 - *, 4 - COUNT
   enum Comparator { EQ, NE, LT, GT, LE, GE } comp;
   char* value;  // the value to compare
 };

@@ -42,8 +42,8 @@ RC SuperNode::read(PageId pid, const PageFile& pf)
 			record_key_pair data;
 			//hexadecimal decoding method
 			data.rid.pid = ((int)pair[0]-48)*256 + ((int)pair[1]-48)*16 + ((int)pair[2]-48);
-			data.rid.sid = ((int)pair[4]-48)*16 + ((int)pair[5]-48);
-			data.key = ((int)pair[7]-48)*16*16*16 + ((int)pair[8]-48)*16*16 + ((int)pair[9]-48)*16 + ((int)pair[10]-48);
+			data.rid.sid = ((int)pair[3]-48)*16 + ((int)pair[4]-48);
+			data.key = ((int)pair[5]-48)*16*16*16*16*16*16*16 + ((int)pair[6]-48)*16*16*16*16*16*16 + ((int)pair[7]-48)*16*16*16*16*16 + ((int)pair[8]-48)*16*16*16*16 + ((int)pair[9]-48)*16*16*16 + ((int)pair[10]-48)*16*16 + ((int)pair[11]-48)*16 + ((int)pair[12]-48);
 			recordKeyVec.push_back(data);
 		}
 	}
@@ -65,8 +65,8 @@ RC SuperNode::write(PageId pid, PageFile& pf)
 	for(int i=0; i<recordKeyVec.size();i++){
 		std::string pidStr = intToHex(recordKeyVec[i].rid.pid, 3);
 		std::string sidStr = intToHex(recordKeyVec[i].rid.sid, 2);
-		std::string keyStr = intToHex(recordKeyVec[i].key, 4);
-		strBuff += pidStr+','+sidStr+','+keyStr+' ';
+		std::string keyStr = intToHex(recordKeyVec[i].key, 8);
+		strBuff += pidStr+sidStr+keyStr+' ';
 	}
     std::string nextPageStr = intToHex(nextPage, 3) + 'X';
     if(nextPage == -1){

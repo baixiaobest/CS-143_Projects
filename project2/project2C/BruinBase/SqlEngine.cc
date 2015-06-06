@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "Bruinbase.h"
 #include "SqlEngine.h"
 #include "BTreeIndex.h"
@@ -159,13 +160,13 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
                   startingKey = atoi(cond[i].value);
               }
               if (cond[i].comp==SelCond::LT && (endingKey==-1 || (atoi(cond[i].value)-1) < endingKey)) {
-                  endingKey = stoi(cond[i].value)-1;
+                  endingKey = atoi(cond[i].value)-1;
               }
               if (cond[i].comp==SelCond::LE && (endingKey==-1 || atoi(cond[i].value) < endingKey)) {
-                  endingKey = stoi(cond[i].value);
+                  endingKey = atoi(cond[i].value);
               }
               if(cond[i].comp==SelCond::EQ){
-                  int newKey = stoi(cond[i].value);
+                  int newKey = atoi(cond[i].value);
                   for (int i=0; i<equalKeyVec.size(); i++) {//different equal keys are not allowed
                       if(equalKeyVec[i]!=newKey)
                         goto exit_select;
@@ -177,7 +178,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
                   startingKey = newKey; endingKey = newKey;
               }
               if (cond[i].comp==SelCond::NE) {
-                  notEqualKeyVec.push_back(stoi(cond[i].value));
+                  notEqualKeyVec.push_back(atoi(cond[i].value));
               }
           }else{ //condition on value
               comparingStr.push_back(cond[i].value);
